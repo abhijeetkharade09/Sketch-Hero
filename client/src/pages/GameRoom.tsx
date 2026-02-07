@@ -460,6 +460,50 @@ export default function GameRoom() {
 
       </div>
 
+      {/* DESKTOP ONLY: Chat Input inside Chat Panel */}
+      {activeTab === 'chat' && (
+        <form
+          onSubmit={handleChatInputSubmit}
+          className="hidden lg:flex items-center gap-2 p-3 bg-slate-800/90 backdrop-blur-md border-t border-white/10"
+        >
+          <input
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            placeholder={isListening ? "Listening..." : (isDrawer ? "Chat disabled" : "Type guess...")}
+            disabled={isDrawer || gameState.state !== 'drawing'}
+            className={cn(
+              "flex-1 bg-slate-900 text-white text-sm px-3 py-2 rounded-lg border border-slate-700 focus:border-blue-500 focus:outline-none placeholder:text-slate-500 disabled:opacity-50",
+              isListening && "border-red-500 border-2"
+            )}
+          />
+
+          {hasVoiceSupport && (
+            <button
+              type="button"
+              onClick={toggleVoiceRecognition}
+              disabled={isDrawer || gameState.state !== 'drawing'}
+              title={isListening ? "Stop listening" : "Start voice input"}
+              className={cn(
+                "p-2 rounded-lg transition-colors",
+                isListening
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-gray-600 text-white hover:bg-gray-500 disabled:opacity-50"
+              )}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </button>
+          )}
+
+          <button
+            type="submit"
+            disabled={!chatInput.trim() || isDrawer || gameState.state !== 'drawing'}
+            className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500 disabled:opacity-50"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </form>
+      )}
+
       {/* MOBILE ONLY: Fixed Chat Input Bar at Bottom of Viewport */}
       {activeTab === 'chat' && (
         <form 
