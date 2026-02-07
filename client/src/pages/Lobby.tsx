@@ -151,7 +151,7 @@ export default function Lobby() {
                       onChange={(e) => setTimeLimit(Number(e.target.value))}
                       className="w-full bg-slate-800 border-2 border-slate-700 rounded-lg p-2 sm:p-2.5 font-bold text-sm sm:text-base"
                     >
-                      {[30, 45, 60, 80, 1000].map(t => <option key={t} value={t}>{t} Seconds</option>)}
+                      {[30, 45, 60, 80, 100].map(t => <option key={t} value={t}>{t} Seconds</option>)}
                     </select>
                   </div>
                 </div>
@@ -216,7 +216,7 @@ export default function Lobby() {
       {/* Decorative footer */}
       <div className="mt-6 sm:mt-8 text-white/20 text-[10px] sm:text-xs md:text-sm font-bold tracking-wider uppercase text-center px-4 max-w-md">
         {/* <span className="block sm:inline">Multiplayer Drawing Game </span> */}
-        <span className="block sm:inline">Made with ❤️ by <a href="" className="hover:text-white/40 transition-colors">Abhijeet Kharade</a></span>
+        <span className="block sm:inline text-white">Made with ❤️ by <a href="https://www.linkedin.com/in/abhijeetkharade/" className="text-yellow-500 hover:text-yellow-300 transition-colors">Abhijeet Kharade</a></span>
       </div>
     </div>
   );
