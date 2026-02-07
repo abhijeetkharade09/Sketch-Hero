@@ -302,10 +302,10 @@ export default function GameRoom() {
                        Start Game
                      </button>
                    ) : isHost ? (
-                     <div className="text-white/50 bg-white/5 p-3 sm:p-4 rounded-lg sm:rounded-xl text-xs sm:text-sm space-y-2">
+                     <div className="text-white/70 bg-white/5 p-3 sm:p-4 rounded-lg sm:rounded-xl text-xs sm:text-sm space-y-2">
                        <p>Need at least 2 players to start.</p>
-                       <div className="mt-2 text-xs font-mono bg-black/30 p-2 rounded select-all cursor-pointer" onClick={copyCode}>
-                         Invite: {code} <Copy className="w-3 h-3 inline ml-1"/>
+                       <div className="mt-2 text-lg text-yellow-400 hover:text-yellow-200 font-mono bg-black/30 p-2 rounded select-all cursor-pointer" onClick={copyCode}>
+                         Invite: {code} <Copy className="w-5 h-5 inline ml-1"/>
                        </div>
                      </div>
                    ) : (
