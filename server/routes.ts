@@ -54,6 +54,7 @@ interface GameRoomState {
   round: number;
   maxRounds: number;
   roundTime: number; 
+  currentDrawerIndex: number;
   drawerId: string | null;
   word: string | null;
   wordHint: string; 
@@ -74,8 +75,7 @@ const rooms = new Map<string, GameRoomState>();
 
 const WORDS = [
 
-  //Alpha
-  "apple", 
+  "apple",    //Alphabet & Common Words
   "banana",
   "elephant",
   "guitar",
@@ -94,9 +94,7 @@ const WORDS = [
   "dragon",
   "earth",
   "flower",
-
-  // Objects & Things
-  "backpack",
+  "backpack",    // Objects & Things
   "bicycle",
   "binoculars",
   "calculator",
@@ -121,9 +119,7 @@ const WORDS = [
   "toothbrush",
   "wallet",
   "watch",
-
-  // Animals
-  "chameleon",
+  "chameleon",  // Animals
   "dolphin",
   "eagle",
   "flamingo",
@@ -138,9 +134,7 @@ const WORDS = [
   "snail",
   "turtle",
   "wolf",
-
-  // Places & Structures
-  "bridge",
+  "bridge",    // Places & Structures
   "campfire",
   "castle",
   "classroom",
@@ -150,21 +144,17 @@ const WORDS = [
   "playground",
   "stadium",
   "treehouse",
-  "windmill",
-
-  // Vehicles & Transport
-  "ambulance",
+  "windmill", 
+  "ambulance",  // Vehicles & Transport
   "bulldozer",
   "helicopter",
   "motorcycle",
   "rocket",
-  "school bus",
+  "school",
   "submarine",
   "tractor",
-  "train engine",
-
-  // Actions & Concepts
-  "dancing",
+  "engine",
+  "dancing",   // Actions & Concepts
   "fishing",
   "painting",
   "reading",
@@ -174,9 +164,7 @@ const WORDS = [
   "surfing",
   "thinking",
   "yawning",
-
-  // Nature & Environment
-  "avalanche",
+  "avalanche",   // Nature & Environment
   "camping",
   "desert",
   "earthquake",
@@ -259,6 +247,7 @@ export async function registerRoutes(
         round: 0,
         maxRounds: room.roundCount || 3,
         roundTime: room.roundTime || 60,
+        currentDrawerIndex: 0,
         drawerId: null,
         word: null,
         wordHint: "",
@@ -466,8 +455,8 @@ function startRound(io: SocketIOServer, room: GameRoomState, code: string) {
     const playerArray = Array.from(room.players.values()).filter(p => p.connected);
     if (playerArray.length === 0) return;
 
-    // Sequential rotation
-    const drawer = playerArray[(room.round - 1) % playerArray.length];
+    // Sequential rotation based on currentDrawerIndex
+    const drawer = playerArray[room.currentDrawerIndex % playerArray.length];
     room.drawerId = drawer.id;
     
     // Pick 3 random words
@@ -583,12 +572,23 @@ function endRound(io: SocketIOServer, room: GameRoomState, code: string) {
     io.to(code).emit("roundEnd", { word: room.word });
     
     setTimeout(() => {
-        if (room.round >= room.maxRounds) {
+        // Advance to next drawer
+        const playerArray = Array.from(room.players.values()).filter(p => p.connected);
+        if (playerArray.length === 0) return;
+        
+        room.currentDrawerIndex = (room.currentDrawerIndex + 1) % playerArray.length;
+        
+        // If we've cycled through all players, increment round
+        if (room.currentDrawerIndex === 0) {
+            room.round++;
+        }
+        
+        // Check if game is finished
+        if (room.round > room.maxRounds) {
             room.status = "finished";
             io.to(code).emit("gameState", getPublicGameState(room));
             io.to(code).emit("gameEnd", { players: Array.from(room.players.values()) });
         } else {
-            room.round++;
             startRound(io, room, code);
         }
     }, 5000); // 5s cooldown
