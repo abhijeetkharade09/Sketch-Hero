@@ -221,7 +221,6 @@ export default function GameRoom() {
         </div>
       </div>
 
-
       {/* Bottom Row: Room Code */}
       <div className="flex justify-end mt-2 sm:mt-3">
        <button

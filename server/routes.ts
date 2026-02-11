@@ -74,108 +74,102 @@ interface GameRoomState {
 const rooms = new Map<string, GameRoomState>();
 
 const WORDS = [
-
-  "apple",    //Alphabet & Common Words
-  "banana",
-  "elephant",
   "guitar",
-  "jellyfish",
-  "lion",
-  "monkey",
-  "octopus",
-  "penguin",
-  "robot",
-  "umbrella",
-  "whale",
-  "zebra",
-  "airplane",
-  "beach",
-  "cloud",
-  "dragon",
-  "earth",
-  "flower",
-  "backpack",    // Objects & Things
-  "bicycle",
-  "binoculars",
-  "calculator",
-  "camera",
-  "candle",
-  "clock",
-  "compass",
-  "crown",
-  "envelope",
-  "flashlight",
-  "headphones",
-  "hourglass",
-  "keychain",
-  "ladder",
-  "lock",
-  "microphone",
-  "notebook",
-  "paintbrush",
-  "pillow",
-  "scissors",
-  "telescope",
-  "toothbrush",
-  "wallet",
-  "watch",
-  "chameleon",  // Animals
-  "dolphin",
-  "eagle",
-  "flamingo",
-  "frog",
-  "kangaroo",
-  "koala",
-  "lobster",
-  "parrot",
-  "peacock",
-  "rabbit",
-  "seahorse",
-  "snail",
   "turtle",
-  "wolf",
-  "bridge",    // Places & Structures
-  "campfire",
-  "castle",
-  "classroom",
-  "fountain",
-  "garage",
-  "lighthouse",
-  "playground",
-  "stadium",
-  "treehouse",
-  "windmill", 
-  "ambulance",  // Vehicles & Transport
-  "bulldozer",
-  "helicopter",
-  "motorcycle",
-  "rocket",
-  "school",
-  "submarine",
-  "tractor",
-  "engine",
-  "dancing",   // Actions & Concepts
-  "fishing",
-  "painting",
-  "reading",
-  "sleepwalking",
-  "skateboarding",
-  "snowboarding",
-  "surfing",
-  "thinking",
-  "yawning",
-  "avalanche",   // Nature & Environment
-  "camping",
-  "desert",
-  "earthquake",
-  "forest",
-  "hurricane",
-  "island",
-  "mountain",
+  "calculator",
   "rainbow",
+  "lion",
+  "bridge",
+  "paintbrush",
+  "octopus",
+  "airplane",
+  "wallet",
+  "forest",
+  "koala",
+  "camera",
+  "rocket",
+  "banana",
+  "castle",
+  "sleepwalking",
+  "dolphin",
+  "umbrella",
+  "crown",
+  "snowboarding",
+  "microphone",
+  "avalanche",
+  "parrot",
+  "clock",
+  "apple",
   "volcano",
-  "waterfall"
+  "helicopter",
+  "wolf",
+  "notebook",
+  "dragon",
+  "submarine",
+  "flower",
+  "skateboarding",
+  "compass",
+  "eagle",
+  "mountain",
+  "backpack",
+  "fishing",
+  "peacock",
+  "binoculars",
+  "beach",
+  "monkey",
+  "ladder",
+  "hurricane",
+  "zebra",
+  "flashlight",
+  "penguin",
+  "island",
+  "candle",
+  "surfing",
+  "rabbit",
+  "classroom",
+  "earthquake",
+  "watch",
+  "whale",
+  "keychain",
+  "engine",
+  "frog",
+  "treehouse",
+  "thinking",
+  "bulldozer",
+  "jellyfish",
+  "hourglass",
+  "waterfall",
+  "tractor",
+  "flamingo",
+  "desert",
+  "motorcycle",
+  "earth",
+  "pillow",
+  "seahorse",
+  "playground",
+  "painting",
+  "chameleon",
+  "campfire",
+  "yawning",
+  "scissors",
+  "dancing",
+  "ambulance",
+  "cloud",
+  "telescope",
+  "kangaroo",
+  "windmill",
+  "bicycle",
+  "lobster",
+  "reading",
+  "lock",
+  "school",
+  "fountain",
+  "robot",
+  "garage",
+  "headphones",
+  "snail"
 ];
+
 
 
 export async function registerRoutes(
@@ -459,12 +453,30 @@ function startRound(io: SocketIOServer, room: GameRoomState, code: string) {
     const drawer = playerArray[room.currentDrawerIndex % playerArray.length];
     room.drawerId = drawer.id;
     
-    // Pick 3 random words
-    const shuffled = [...WORDS].sort(() => 0.5 - Math.random());
+                  // Pick 3 random words
+                  // const shuffled = [...WORDS].sort(() => 0.5 - Math.random());
+                  // room.wordOptions = shuffled.slice(0, 3);
+                  // room.word = null;
+                  // room.status = "playing";
+                  // room.state = "selecting_word"; // Added to room state for cleaner UI sync
+
+    // Utility (top of file or separate utils file)
+    function shuffleWords(words: string[]) {
+      const arr = [...words];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Inside route logic Pick 3 random words
+    const shuffled = shuffleWords(WORDS);
     room.wordOptions = shuffled.slice(0, 3);
     room.word = null;
     room.status = "playing";
-    room.state = "selecting_word"; // Added to room state for cleaner UI sync
+    room.state = "selecting_word";
+
     
     // Reset guesses
     room.players.forEach(p => p.hasGuessed = false);
@@ -497,21 +509,7 @@ function handleWordSelection(io: SocketIOServer, room: GameRoomState, code: stri
     room.word = selectedWord;
     room.wordHint = room.word.replace(/[a-zA-Z]/g, "_ ");
     room.state = "drawing";
-    
-    // Get original room duration from storage if needed or use the one stored in state
-    // room.timer was set to roundTime during room creation in state
-    // But it might have been modified by selection timer. 
-    // We should probably store roundTime separately in GameRoomState.
-    // For now let's assume we can fetch it or just use a default if it was lost.
-    
-    // Let's check how rooms are initialized. 
-    // roundTime is stored in room.timer initially.
-    // However, room.timer is used for the selection phase (15s).
-    // We need to store the actual round duration.
-    
-    // Actually, let's look at startRound:
-    // room.timer = 15;
-    
+        
     // We need to know what the original roundTime was.
     // Let's add roundTime to GameRoomState.
     
