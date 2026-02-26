@@ -197,43 +197,46 @@ export default function GameRoom() {
     <div className="min-h-screen w-screen overflow-x-hidden flex flex-col bg-slate-900 p-2 sm:p-3 md:p-4 gap-3 sm:gap-4 md:gap-5 max-w-[2000px] mx-auto">
       
     {/* HEADER: Mobile Responsive */}
-   <header className="flex items-center justify-between gap-2 w-full bg-white/10 backdrop-blur-md rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 md:p-3 border border-white/10 shadow-lg shrink-0 z-10">
+   <header className="w-full bg-white/10 backdrop-blur-md rounded-lg sm:rounded-xl px-2 py-2 sm:px-3 sm:py-3 border border-white/10 shadow-lg shrink-0 z-10">
 
-      {/* Top Row: Timer + Round */}
-      <div className="flex flex-col items-center gap-0.5 sm:gap-2">
-        <div className="bg-slate-800 text-white rounded-md px-2 sm:px-3 py-1 font-mono font-bold text-sm sm:text-xl border border-slate-600 flex items-center gap-1 sm:gap-2 shadow-inner">
-          <Clock className="w-3 h-3 sm:w-5 sm:h-5 text-blue-400" />
-          <span>{gameState.timer}s</span>
-        </div>
-        <div className="text-white/70 font-bold text-[10px] sm:text-sm">
-          Round {gameState.round}/{room!.roundCount}
-        </div>
+  {/* Row Container */}
+  <div className="flex items-center justify-between gap-2">
+
+    {/* LEFT: Timer + Round */}
+    <div className="flex flex-col items-center gap-1">
+      <div className="bg-slate-800 text-white rounded-md px-2 sm:px-3 py-1 font-mono font-bold text-sm sm:text-xl border border-slate-600 flex items-center gap-1 sm:gap-2 shadow-inner">
+        <Clock className="w-3 h-3 sm:w-5 sm:h-5 text-blue-400" />
+        <span>{gameState.timer}s</span>
       </div>
-
-      {/* Word Display (Centered, Full Width) */}
-      <div className="flex-1 flex justify-center px-1 sm:px-3 overflow-hidden">
-        <div className="px-2 sm:px-6 py-1 bg-white rounded-md border border-slate-200 shadow-[0_3px_0_#cbd5e1]">
-          <h2 className="font-mono text-xs xs:text-sm sm:text-lg md:text-2xl tracking-[0.15em] sm:tracking-[0.25em] font-bold text-slate-800 uppercase whitespace-nowrap">
-            {isDrawer && gameState.state === 'drawing'
-              ? currentWord
-              : (!isDrawer ? gameState.wordHint : '...')}
-          </h2>
-        </div>
+      <div className="text-white/70 font-bold text-[10px] sm:text-sm">
+        Round {gameState.round}/{room!.roundCount}
       </div>
+    </div>
 
-      {/* Bottom Row: Room Code */}
-      <div className="flex justify-end mt-2 sm:mt-3">
-       <button
-          onClick={copyCode}
-          className="flex items-center gap-1 px-2 sm:px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] sm:text-sm whitespace-nowrap"
-        >
-          <span className="hidden xs:inline">Code:</span>
-          <span className="font-mono">{code}</span>
-          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-       </button>
+    {/* CENTER: Word */}
+    <div className="flex-1 flex justify-center px-2 overflow-hidden">
+      <div className="px-2 sm:px-6 py-1 bg-white rounded-md border border-slate-200 shadow-[0_3px_0_#cbd5e1] max-w-full">
+        <h2 className="font-mono text-xs sm:text-lg md:text-2xl tracking-[0.15em] sm:tracking-[0.25em] font-bold text-slate-800 uppercase truncate">
+          {isDrawer && gameState.state === 'drawing'
+            ? currentWord
+            : (!isDrawer ? gameState.wordHint : '...')}
+        </h2>
       </div>
+    </div>
 
-    </header>
+    {/* RIGHT: Room Code */}
+    <div>
+      <button
+        onClick={copyCode}
+        className="flex items-center gap-1 px-2 sm:px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] sm:text-sm whitespace-nowrap"
+      >
+        <span className="font-mono">{code}</span>
+        <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+      </button>
+    </div>
+
+  </div>
+</header>
 
 
       {/* MAIN GAME AREA */}
