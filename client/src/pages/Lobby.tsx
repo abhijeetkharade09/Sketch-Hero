@@ -151,7 +151,7 @@ export default function Lobby() {
                       onChange={(e) => setTimeLimit(Number(e.target.value))}
                       className="w-full bg-slate-800 border-2 border-slate-700 rounded-lg p-2 sm:p-2.5 font-bold text-sm sm:text-base"
                     >
-                      {[30, 45, 60, 80, 1000].map(t => <option key={t} value={t}>{t} Seconds</option>)}
+                      {[30, 45, 60, 80, 100].map(t => <option key={t} value={t}>{t} Seconds</option>)}
                     </select>
                   </div>
                 </div>
