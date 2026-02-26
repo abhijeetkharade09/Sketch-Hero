@@ -110,7 +110,7 @@ export function useGameSocket(roomId: string | null, userId: string | null, user
     });
 
     newSocket.on('message', (message: ChatMessage) => {
-      setChatMessages(prev => [...prev, message].slice(-10));
+      setChatMessages(prev => [...prev, message].slice(-5)); // Keep only last 5 messages
       
       // Toast for correct guesses or system messages if needed
       if (message.type === 'system' && message.text.includes('winner')) {

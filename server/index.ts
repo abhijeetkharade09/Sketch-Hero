@@ -92,6 +92,6 @@ app.use((req, res, next) => {
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "5000", 10);
   httpServer.listen(port, () => {
-    log(`serving on port ${port}`);
+    log(`Running Successfully on: http://localhost:${port}`);
   });
 })();
